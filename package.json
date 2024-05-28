@@ -1,10 +1,10 @@
 {
   "name": "memorama-multiplayer",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -12,5 +12,14 @@
   "dependencies": {
     "express": "^4.19.2",
     "ws": "^8.17.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aarenas06/memorama-multiplayer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aarenas06/memorama-multiplayer/issues"
+  },
+  "homepage": "https://github.com/aarenas06/memorama-multiplayer#readme",
+  "description": ""
 }
