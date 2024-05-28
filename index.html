@@ -98,7 +98,9 @@
     <div class="nuevo-juego" onclick="nuevoJuego()">Nuevo Juego</div>
 
     <script>
-      const ws = new WebSocket("ws://localhost:3000");
+      const ws = new WebSocket(
+        "ws://main--scintillating-kitten-d5e968.netlify.app"
+      );
       let selecciones = [];
 
       ws.onmessage = (event) => {
