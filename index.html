@@ -98,43 +98,59 @@
     <div class="nuevo-juego" onclick="nuevoJuego()">Nuevo Juego</div>
 
     <script>
-      const ws = new WebSocket(
-        "ws://main--scintillating-kitten-d5e968.netlify.app"
-      );
-      let selecciones = [];
+      let ws;
+      function initializeWebSocket() {
+        ws = new WebSocket("wss://tu-direccion-de-servidor-websocket");
 
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.type === "initGame") {
-          generarTablero(data.iconos);
-        } else if (data.type === "selectCard") {
-          seleccionarTarjetaRemota(data.index);
-        } else if (data.type === "deselectCards") {
-          deseleccionarRemoto(data.indices);
-        }
-      };
+        ws.onopen = () => {
+          console.log("WebSocket connection established.");
+        };
+
+        ws.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if (data.type === "initGame") {
+            generarTablero(data.iconos);
+          } else if (data.type === "selectCard") {
+            seleccionarTarjetaRemota(data.index);
+          } else if (data.type === "deselectCards") {
+            deseleccionarRemoto(data.indices);
+          }
+        };
+
+        ws.onerror = (error) => {
+          console.error("WebSocket error:", error);
+        };
+
+        ws.onclose = () => {
+          console.log("WebSocket connection closed.");
+        };
+      }
 
       function nuevoJuego() {
-        ws.send(JSON.stringify({ type: "newGame" }));
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: "newGame" }));
+        } else {
+          console.log("WebSocket not connected.");
+        }
       }
 
       function generarTablero(iconos) {
-        selecciones = [];
+        let selecciones = [];
         let tablero = document.getElementById("tablero");
         let tarjetas = [];
         for (let i = 0; i < 24; i++) {
           tarjetas.push(`
-          <div class="area-tarjeta" onclick="seleccionarTarjeta(${i})">
-            <div class="tarjeta" id="tarjeta${i}">
-              <div class="cara trasera" id="trasera${i}">
-                ${iconos[i]}
-              </div>
-              <div class="cara superior">
-                <i class="far fa-question-circle"></i>
-              </div>
-            </div>
-          </div>
-        `);
+                <div class="area-tarjeta" onclick="seleccionarTarjeta(${i})">
+                    <div class="tarjeta" id="tarjeta${i}">
+                        <div class="cara trasera" id="trasera${i}">
+                            ${iconos[i]}
+                        </div>
+                        <div class="cara superior">
+                            <i class="far fa-question-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            `);
         }
         tarjetas.sort(() => Math.random() - 0.5);
         tablero.innerHTML = tarjetas.join(" ");
@@ -193,6 +209,8 @@
         ).innerHTML;
         return firstCard !== secondCard;
       }
+
+      initializeWebSocket(); // Initialize WebSocket connection on page load
     </script>
   </body>
 </html>
